@@ -464,18 +464,23 @@ button { font-family: inherit; cursor: pointer; }
     background: linear-gradient(160deg, var(--petrol) 60%, #0f3d34 100%);
   }
   .hero-inner {
-    padding: 40px 0 48px;
+    padding: 40px 20px 48px;
     max-width: 100%;
     text-align: right;
   }
   .hero-eyebrow { font-size: 0.78rem; margin-bottom: 16px; }
-  .hero h1 { font-size: 1.85rem; line-height: 1.35; }
+  .hero h1 {
+    font-size: clamp(1.35rem, 7.2vw, 1.85rem);
+    line-height: 1.35;
+    white-space: nowrap;
+  }
   .hero .hero-en {
-    font-size: 0.8rem;
+    font-size: clamp(0.68rem, 3.4vw, 0.85rem);
     line-height: 1.5;
     margin-top: 8px;
     text-align: right;
     direction: rtl;
+    white-space: nowrap;
   }
   .hero-tagline {
     font-size: 1.02rem;
@@ -509,8 +514,6 @@ button { font-family: inherit; cursor: pointer; }
 }
 
 @media (max-width: 380px) {
-  .hero h1 { font-size: 1.68rem; }
-  .hero .hero-en { font-size: 0.75rem; }
   .brand img { width: 29px; }
   .brand-name { font-size: 0.8rem; }
   .nav-links a { padding: 6px 8px; font-size: 0.8rem; }
