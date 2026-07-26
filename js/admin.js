@@ -11,12 +11,62 @@ function showAlert(el, msg, ok = false) {
   if (ok) setTimeout(() => el.classList.remove('show'), 3500);
 }
 
+// ================= المحرر الغني (Quill) =================
+const editorToolbar = [
+  [{ header: [2, 3, false] }],
+  ['bold', 'italic', 'underline'],
+  [{ list: 'ordered' }, { list: 'bullet' }],
+  [{ align: [] }],
+  ['link', 'image'],
+  ['clean'],
+];
+
+function makeEditor(selector, folder) {
+  const quill = new Quill(selector, {
+    theme: 'snow',
+    modules: { toolbar: editorToolbar },
+    placeholder: 'اكتب المحتوى هنا… تقدر تضيف عناوين وصور بين الفقرات.',
+  });
+  // رفع الصورة داخل النص إلى Supabase بدل ما تنحفظ base64
+  quill.getModule('toolbar').addHandler('image', () => {
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.accept = 'image/*';
+    input.onchange = async () => {
+      const file = input.files[0];
+      if (!file) return;
+      const range = quill.getSelection(true);
+      quill.insertText(range.index, ' جارٍ رفع الصورة… ');
+      try {
+        const url = await uploadImage(file, folder);
+        quill.deleteText(range.index, ' جارٍ رفع الصورة… '.length);
+        quill.insertEmbed(range.index, 'image', url);
+        quill.setSelection(range.index + 1);
+      } catch (err) {
+        console.error(err);
+        quill.deleteText(range.index, ' جارٍ رفع الصورة… '.length);
+        showAlert(adminAlert, 'تعذّر رفع الصورة داخل النص.');
+      }
+    };
+    input.click();
+  });
+  return quill;
+}
+
+let evEditor = null;
+let arEditor = null;
+function initEditors() {
+  if (!evEditor) evEditor = makeEditor('#ev-editor', 'events');
+  if (!arEditor) arEditor = makeEditor('#ar-editor', 'articles');
+}
+
 // ================= المصادقة =================
 async function refreshAuthUI() {
   const { data: { session } } = await sb.auth.getSession();
   if (session) {
     loginView.classList.add('hidden');
     adminView.classList.remove('hidden');
+    initEditors();
     document.getElementById('who').textContent = session.user.email;
     loadAdminEvents();
     loadAdminArticles();
@@ -215,7 +265,7 @@ function startEditEvent(ev) {
   document.getElementById('ev-date').value = ev.event_date || '';
   document.getElementById('ev-location').value = ev.location || '';
   document.getElementById('ev-status').value = ev.status === 'past' ? 'past' : 'upcoming';
-  document.getElementById('ev-desc').value = ev.description || '';
+  if (evEditor) evEditor.root.innerHTML = ev.description || '';
   document.getElementById('ev-image').value = '';
   editingEventImages = ev.images && ev.images.length ? ev.images.slice() : (ev.image_url ? [ev.image_url] : []);
   pendingEventFiles = [];
@@ -226,8 +276,9 @@ function startEditEvent(ev) {
 }
 
 function resetEventForm() {
-  ['event-id', 'ev-title', 'ev-date', 'ev-location', 'ev-desc'].forEach((id) => (document.getElementById(id).value = ''));
+  ['event-id', 'ev-title', 'ev-date', 'ev-location'].forEach((id) => (document.getElementById(id).value = ''));
   document.getElementById('ev-status').value = 'upcoming';
+  if (evEditor) evEditor.root.innerHTML = '';
   document.getElementById('ev-image').value = '';
   document.getElementById('ev-image-preview').innerHTML = '';
   editingEventImages = [];
@@ -244,7 +295,7 @@ document.getElementById('ev-save').addEventListener('click', async () => {
   const event_date = document.getElementById('ev-date').value;
   const location = document.getElementById('ev-location').value.trim();
   const status = document.getElementById('ev-status').value;
-  const description = document.getElementById('ev-desc').value.trim();
+  const description = (evEditor && evEditor.getText().trim()) ? evEditor.root.innerHTML : '';
 
   if (!title || !event_date) {
     showAlert(adminAlert, 'العنوان والتاريخ مطلوبان.');
@@ -343,7 +394,7 @@ async function loadAdminArticles() {
 function startEditArticle(a) {
   document.getElementById('article-id').value = a.id;
   document.getElementById('ar-title').value = a.title || '';
-  document.getElementById('ar-content').value = a.content || '';
+  if (arEditor) arEditor.root.innerHTML = a.content || '';
   document.getElementById('ar-image').value = '';
   editingArticleImages = a.images && a.images.length ? a.images.slice() : (a.image_url ? [a.image_url] : []);
   pendingArticleFiles = [];
@@ -354,7 +405,8 @@ function startEditArticle(a) {
 }
 
 function resetArticleForm() {
-  ['article-id', 'ar-title', 'ar-content'].forEach((id) => (document.getElementById(id).value = ''));
+  ['article-id', 'ar-title'].forEach((id) => (document.getElementById(id).value = ''));
+  if (arEditor) arEditor.root.innerHTML = '';
   document.getElementById('ar-image').value = '';
   document.getElementById('ar-image-preview').innerHTML = '';
   editingArticleImages = [];
@@ -368,7 +420,7 @@ document.getElementById('ar-cancel').addEventListener('click', resetArticleForm)
 document.getElementById('ar-save').addEventListener('click', async () => {
   const id = document.getElementById('article-id').value;
   const title = document.getElementById('ar-title').value.trim();
-  const content = document.getElementById('ar-content').value.trim();
+  const content = (arEditor && arEditor.getText().trim()) ? arEditor.root.innerHTML : '';
 
   if (!title || !content) {
     showAlert(adminAlert, 'العنوان والمحتوى مطلوبان.');

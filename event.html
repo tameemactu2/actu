@@ -107,7 +107,7 @@
           <span class="num">📅 ${formatDateAr(data.event_date)}</span>
           ${data.location ? `<span>📍 ${escapeHtml(data.location)}</span>` : ''}
         </div>
-        <div class="detail-content">${escapeHtml(data.description || '')}</div>
+        <div class="detail-content rich-content">${data.description || ''}</div>
       `;
       initGallery(images.length);
     })();

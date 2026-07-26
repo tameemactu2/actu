@@ -58,7 +58,7 @@ function renderEvents() {
             <span class="event-date num">📅 ${formatDateAr(ev.event_date)}</span>
           </div>
           <h3>${escapeHtml(ev.title)}</h3>
-          <p>${escapeHtml(ev.description || '')}</p>
+          <p>${escapeHtml(stripHtml(ev.description).slice(0, 120))}${stripHtml(ev.description).length > 120 ? '…' : ''}</p>
           ${ev.location ? `<div class="event-loc">📍 ${escapeHtml(ev.location)}</div>` : ''}
         </div>
       </article>
@@ -94,7 +94,8 @@ async function loadArticles() {
       const img = a.image_url
         ? `<img src="${escapeHtml(a.image_url)}" alt="${escapeHtml(a.title)}" loading="lazy" />`
         : `<div class="img-fallback"><img src="assets/mark.png" alt="" /></div>`;
-      const excerpt = (a.content || '').slice(0, 140) + ((a.content || '').length > 140 ? '…' : '');
+      const plain = stripHtml(a.content);
+      const excerpt = plain.slice(0, 140) + (plain.length > 140 ? '…' : '');
       const dateStr = a.published_at ? formatDateAr(String(a.published_at).slice(0, 10)) : '';
       return `
       <a class="card-link" href="article.html?id=${encodeURIComponent(a.id)}">

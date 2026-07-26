@@ -100,7 +100,7 @@
         ${galleryHtml(images)}
         <h1>${escapeHtml(data.title)}</h1>
         ${dateStr ? `<div class="detail-sub"><span class="num">📅 ${dateStr}</span></div>` : ''}
-        <div class="detail-content">${escapeHtml(data.content || '')}</div>
+        <div class="detail-content rich-content">${data.content || ''}</div>
       `;
       initGallery(images.length);
     })();

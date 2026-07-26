@@ -10,6 +10,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet" />
+  <link href="https://cdn.jsdelivr.net/npm/quill@2.0.3/dist/quill.snow.css" rel="stylesheet" />
   <link rel="stylesheet" href="css/style.css" />
 </head>
 <body>
@@ -113,8 +114,8 @@
             </div>
           </div>
           <div class="field">
-            <label for="ev-desc">وصف مختصر</label>
-            <textarea id="ev-desc" placeholder="سطر أو سطرين عن الفعالية…"></textarea>
+            <label>وصف الفعالية (تقدر تنسّق وتدرج صور داخل النص)</label>
+            <div id="ev-editor" class="rich-editor"></div>
           </div>
           <div class="field">
             <label>صور الفعالية (اختياري — تقدر تختار أكثر من صورة)</label>
@@ -148,8 +149,8 @@
             <input type="text" id="ar-title" placeholder="مثال: وش يعني اكتواري؟" />
           </div>
           <div class="field">
-            <label for="ar-content">محتوى المقال</label>
-            <textarea id="ar-content" style="min-height:180px;" placeholder="نص المقال…"></textarea>
+            <label>محتوى المقال (تقدر تنسّق وتدرج صور داخل النص)</label>
+            <div id="ar-editor" class="rich-editor"></div>
           </div>
           <div class="field">
             <label>صور المقال (اختياري — تقدر تختار أكثر من صورة)</label>
@@ -176,6 +177,7 @@
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="https://cdn.jsdelivr.net/npm/quill@2.0.3/dist/quill.js"></script>
   <script src="js/config.js"></script>
   <script src="js/admin.js"></script>
 </body>
