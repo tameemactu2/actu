@@ -849,7 +849,7 @@ button { font-family: inherit; cursor: pointer; }
   .brand-name { font-size: 0.95rem; line-height: 1.3; }
   .brand-sub { font-size: 0.66rem; }
 
-  /* زر الهمبرغر يظهر أعلى اليسار */
+  /* زر الهمبرغر أعلى اليمين */
   .nav-toggle {
     display: flex;
     flex-direction: column;
@@ -857,7 +857,8 @@ button { font-family: inherit; cursor: pointer; }
     gap: 5px;
     position: absolute;
     top: 14px;
-    inset-inline-start: 4px;
+    right: 4px;
+    left: auto;
     width: 42px;
     height: 42px;
     padding: 9px;
@@ -882,7 +883,8 @@ button { font-family: inherit; cursor: pointer; }
   .nav-links {
     position: fixed;
     top: 0;
-    inset-inline-start: 0;
+    right: 0;
+    left: auto;
     height: 100vh;
     width: 76%;
     max-width: 300px;
@@ -892,10 +894,10 @@ button { font-family: inherit; cursor: pointer; }
     justify-content: flex-start;
     gap: 4px;
     padding: 80px 20px 24px;
-    transform: translateX(-105%);
+    transform: translateX(105%);
     transition: transform 0.3s ease;
     z-index: 55;
-    box-shadow: 4px 0 24px rgba(0, 0, 0, 0.3);
+    box-shadow: -4px 0 24px rgba(0, 0, 0, 0.3);
     flex-wrap: nowrap;
   }
   .nav-links.open { transform: translateX(0); }
