@@ -84,6 +84,7 @@
   </footer>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="https://cdn.jsdelivr.net/npm/dompurify@3.2.4/dist/purify.min.js"></script>
   <script src="js/config.js"></script>
   <script src="js/gallery.js"></script>
   <script src="js/menu.js"></script>
@@ -122,7 +123,7 @@
           <span class="num">📅 ${formatDateAr(data.event_date)}</span>
           ${data.location ? `<span>📍 ${escapeHtml(data.location)}</span>` : ''}
         </div>
-        <div class="detail-content rich-content">${data.description || ''}</div>
+        <div class="detail-content rich-content">${DOMPurify.sanitize(data.description || '')}</div>
       `;
       initGallery(images.length);
     })();
