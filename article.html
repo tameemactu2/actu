@@ -47,13 +47,18 @@
           <span class="brand-sub en">Actuarial Science Club · KSU</span>
         </span>
       </a>
-      <div class="nav-links">
+      <button class="nav-toggle" id="nav-toggle" aria-label="القائمة" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+      <div class="nav-links" id="nav-links">
+        <a href="index.html">الصفحة الرئيسية</a>
         <a href="index.html#events">الفعاليات</a>
         <a href="index.html#articles">المقالات</a>
         <a href="index.html#about">من نحن</a>
       </div>
     </div>
   </nav>
+  <div class="nav-backdrop" id="nav-backdrop"></div>
 
   <main class="detail">
     <div class="container" id="content">
@@ -81,6 +86,7 @@
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="js/config.js"></script>
   <script src="js/gallery.js"></script>
+  <script src="js/menu.js"></script>
   <script>
     (async function () {
       const params = new URLSearchParams(location.search);

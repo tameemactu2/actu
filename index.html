@@ -56,13 +56,18 @@
           <span class="brand-sub en">Actuarial Science Club · KSU</span>
         </span>
       </a>
-      <div class="nav-links">
+      <button class="nav-toggle" id="nav-toggle" aria-label="القائمة" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+      <div class="nav-links" id="nav-links">
+        <a href="index.html">الصفحة الرئيسية</a>
         <a href="#events">الفعاليات</a>
         <a href="#articles">المقالات</a>
         <a href="#about">من نحن</a>
       </div>
     </div>
   </nav>
+  <div class="nav-backdrop" id="nav-backdrop"></div>
 
   <!-- الهيرو -->
   <header class="hero">
@@ -95,6 +100,7 @@
       <div id="events-grid" class="events-grid">
         <div class="loader">جارٍ تحميل الفعاليات…</div>
       </div>
+      <div id="events-more" class="show-more-wrap"></div>
     </div>
   </section>
 
@@ -108,6 +114,7 @@
       <div id="articles-grid" class="articles-grid">
         <div class="loader">جارٍ تحميل المقالات…</div>
       </div>
+      <div id="articles-more" class="show-more-wrap"></div>
     </div>
   </section>
 
@@ -274,6 +281,7 @@
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="js/config.js"></script>
+  <script src="js/menu.js"></script>
   <script src="js/main.js"></script>
 </body>
 </html>

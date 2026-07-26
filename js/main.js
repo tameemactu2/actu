@@ -21,34 +21,19 @@ async function loadEvents() {
   renderEvents();
 }
 
-function renderEvents() {
-  const list = allEvents.filter((ev) => {
-    if (currentFilter === 'all') return true;
-    return effectiveStatus(ev) === currentFilter;
-  });
+let eventsExpanded = false;
+const EVENTS_LIMIT = 3;
 
-  if (!list.length) {
-    const msg =
-      currentFilter === 'upcoming'
-        ? 'ما فيه فعاليات قادمة حالياً — تابعنا، الجديد قريب.'
-        : currentFilter === 'past'
-          ? 'ما فيه فعاليات منتهية بعد.'
-          : 'ما أضيفت فعاليات بعد.';
-    eventsGrid.innerHTML = `<div class="empty-state">${msg}</div>`;
-    return;
-  }
-
-  eventsGrid.innerHTML = list
-    .map((ev) => {
-      const st = effectiveStatus(ev);
-      const tag =
-        st === 'upcoming'
-          ? '<span class="tag tag-upcoming">قادمة</span>'
-          : '<span class="tag tag-past">منتهية</span>';
-      const img = ev.image_url
-        ? `<img src="${escapeHtml(ev.image_url)}" alt="${escapeHtml(ev.title)}" loading="lazy" />`
-        : `<div class="img-fallback"><img src="assets/mark.png" alt="" /></div>`;
-      return `
+function eventCardHtml(ev) {
+  const st = effectiveStatus(ev);
+  const tag =
+    st === 'upcoming'
+      ? '<span class="tag tag-upcoming">قادمة</span>'
+      : '<span class="tag tag-past">منتهية</span>';
+  const img = ev.image_url
+    ? `<img src="${escapeHtml(ev.image_url)}" alt="${escapeHtml(ev.title)}" loading="lazy" />`
+    : `<div class="img-fallback"><img src="assets/mark.png" alt="" /></div>`;
+  return `
       <a class="card-link" href="event.html?id=${encodeURIComponent(ev.id)}">
       <article class="event-card">
         <div class="event-img">${img}</div>
@@ -63,8 +48,43 @@ function renderEvents() {
         </div>
       </article>
       </a>`;
-    })
-    .join('');
+}
+
+function renderEvents() {
+  const list = allEvents.filter((ev) => {
+    if (currentFilter === 'all') return true;
+    return effectiveStatus(ev) === currentFilter;
+  });
+
+  if (!list.length) {
+    const msg =
+      currentFilter === 'upcoming'
+        ? 'ما فيه فعاليات قادمة حالياً — تابعنا، الجديد قريب.'
+        : currentFilter === 'past'
+          ? 'ما فيه فعاليات منتهية بعد.'
+          : 'ما أضيفت فعاليات بعد.';
+    eventsGrid.innerHTML = `<div class="empty-state">${msg}</div>`;
+    const mb = document.getElementById('events-more');
+    if (mb) mb.innerHTML = '';
+    return;
+  }
+
+  const shown = eventsExpanded ? list : list.slice(0, EVENTS_LIMIT);
+  eventsGrid.innerHTML = shown.map(eventCardHtml).join('');
+
+  const moreWrap = document.getElementById('events-more');
+  if (moreWrap) {
+    if (list.length > EVENTS_LIMIT) {
+      moreWrap.innerHTML = `<button class="btn btn-outline-teal show-more-btn">${eventsExpanded ? 'عرض أقل' : 'عرض المزيد'}</button>`;
+      moreWrap.querySelector('button').addEventListener('click', () => {
+        eventsExpanded = !eventsExpanded;
+        renderEvents();
+        if (!eventsExpanded) document.getElementById('events').scrollIntoView({ behavior: 'smooth' });
+      });
+    } else {
+      moreWrap.innerHTML = '';
+    }
+  }
 }
 
 document.querySelectorAll('.filter-btn').forEach((btn) => {
@@ -72,32 +92,38 @@ document.querySelectorAll('.filter-btn').forEach((btn) => {
     document.querySelectorAll('.filter-btn').forEach((b) => b.classList.remove('active'));
     btn.classList.add('active');
     currentFilter = btn.dataset.filter;
+    eventsExpanded = false;
     renderEvents();
   });
 });
+
+let allArticles = [];
+let articlesExpanded = false;
+const ARTICLES_LIMIT = 3;
 
 async function loadArticles() {
   const { data, error } = await sb
     .from('articles')
     .select('*')
-    .order('published_at', { ascending: false })
-    .limit(6);
+    .order('published_at', { ascending: false });
 
   if (error || !data || !data.length) {
     articlesGrid.innerHTML = `<div class="empty-state" style="color: rgba(244,244,241,0.6);">ما نُشرت مقالات بعد.</div>`;
     if (error) console.error(error);
     return;
   }
+  allArticles = data;
+  renderArticles();
+}
 
-  articlesGrid.innerHTML = data
-    .map((a) => {
-      const img = a.image_url
-        ? `<img src="${escapeHtml(a.image_url)}" alt="${escapeHtml(a.title)}" loading="lazy" />`
-        : `<div class="img-fallback"><img src="assets/mark.png" alt="" /></div>`;
-      const plain = stripHtml(a.content);
-      const excerpt = plain.slice(0, 140) + (plain.length > 140 ? '…' : '');
-      const dateStr = a.published_at ? formatDateAr(String(a.published_at).slice(0, 10)) : '';
-      return `
+function articleCardHtml(a) {
+  const img = a.image_url
+    ? `<img src="${escapeHtml(a.image_url)}" alt="${escapeHtml(a.title)}" loading="lazy" />`
+    : `<div class="img-fallback"><img src="assets/mark.png" alt="" /></div>`;
+  const plain = stripHtml(a.content);
+  const excerpt = plain.slice(0, 140) + (plain.length > 140 ? '…' : '');
+  const dateStr = a.published_at ? formatDateAr(String(a.published_at).slice(0, 10)) : '';
+  return `
       <a class="card-link" href="article.html?id=${encodeURIComponent(a.id)}">
       <article class="article-card">
         <div class="event-img">${img}</div>
@@ -108,8 +134,25 @@ async function loadArticles() {
         </div>
       </article>
       </a>`;
-    })
-    .join('');
+}
+
+function renderArticles() {
+  const shown = articlesExpanded ? allArticles : allArticles.slice(0, ARTICLES_LIMIT);
+  articlesGrid.innerHTML = shown.map(articleCardHtml).join('');
+
+  const moreWrap = document.getElementById('articles-more');
+  if (moreWrap) {
+    if (allArticles.length > ARTICLES_LIMIT) {
+      moreWrap.innerHTML = `<button class="btn btn-outline-mint show-more-btn">${articlesExpanded ? 'عرض أقل' : 'عرض المزيد'}</button>`;
+      moreWrap.querySelector('button').addEventListener('click', () => {
+        articlesExpanded = !articlesExpanded;
+        renderArticles();
+        if (!articlesExpanded) document.getElementById('articles').scrollIntoView({ behavior: 'smooth' });
+      });
+    } else {
+      moreWrap.innerHTML = '';
+    }
+  }
 }
 
 loadEvents();
