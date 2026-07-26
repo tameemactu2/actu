@@ -53,7 +53,9 @@ button { font-family: inherit; cursor: pointer; }
   z-index: 50;
   background: var(--petrol);
   border-bottom: 1px solid rgba(184, 240, 192, 0.12);
+  transition: transform 0.3s ease;
 }
+.navbar.nav-hidden { transform: translateY(-100%); }
 .nav-inner {
   display: flex;
   align-items: center;
@@ -447,14 +449,14 @@ button { font-family: inherit; cursor: pointer; }
 @media (max-width: 640px) {
   .container { padding: 0 20px; }
 
-  /* Navbar: brand on its own row, links wrap centered below */
-  .nav-inner { flex-direction: column; align-items: stretch; gap: 8px; padding: 10px 0; }
-  .brand { justify-content: flex-end; }
-  .brand img { width: 40px; }
-  .brand-name { font-size: 1rem; }
-  .brand-sub { font-size: 0.68rem; }
-  .nav-links { justify-content: center; gap: 0; flex-wrap: wrap; }
-  .nav-links a { padding: 7px 12px; font-size: 0.92rem; }
+  /* Navbar: brand row aligned right, links right-aligned below, compact */
+  .nav-inner { flex-direction: column; align-items: stretch; gap: 6px; padding: 8px 0; min-height: 0; }
+  .brand { justify-content: flex-start; gap: 9px; }
+  .brand img { width: 32px; }
+  .brand-name { font-size: 0.85rem; line-height: 1.25; }
+  .brand-sub { font-size: 0.62rem; }
+  .nav-links { justify-content: flex-start; gap: 0; flex-wrap: wrap; }
+  .nav-links a { padding: 6px 10px; font-size: 0.85rem; }
 
   /* Hero: clean right-aligned block, no skew, comfortable spacing */
   .hero::after { display: none; }
@@ -509,6 +511,7 @@ button { font-family: inherit; cursor: pointer; }
 @media (max-width: 380px) {
   .hero h1 { font-size: 1.68rem; }
   .hero .hero-en { font-size: 0.75rem; }
-  .brand-name { font-size: 0.92rem; }
-  .nav-links a { padding: 6px 10px; font-size: 0.86rem; }
+  .brand img { width: 29px; }
+  .brand-name { font-size: 0.8rem; }
+  .nav-links a { padding: 6px 8px; font-size: 0.8rem; }
 }

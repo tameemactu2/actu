@@ -109,3 +109,34 @@ async function loadArticles() {
 
 loadEvents();
 loadArticles();
+
+// إخفاء الناف بار عند النزول، وإظهاره عند الصعود
+(function () {
+  const navbar = document.getElementById('navbar');
+  if (!navbar) return;
+  let lastY = window.scrollY;
+  let ticking = false;
+
+  function onScroll() {
+    const y = window.scrollY;
+    // تجاهل الحركة البسيطة
+    if (Math.abs(y - lastY) < 6) {
+      ticking = false;
+      return;
+    }
+    if (y > lastY && y > 80) {
+      navbar.classList.add('nav-hidden'); // نازل
+    } else {
+      navbar.classList.remove('nav-hidden'); // طالع
+    }
+    lastY = y;
+    ticking = false;
+  }
+
+  window.addEventListener('scroll', () => {
+    if (!ticking) {
+      window.requestAnimationFrame(onScroll);
+      ticking = true;
+    }
+  }, { passive: true });
+})();
