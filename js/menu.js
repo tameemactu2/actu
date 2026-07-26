@@ -25,5 +25,22 @@
     else openMenu();
   });
   if (backdrop) backdrop.addEventListener('click', closeMenu);
-  links.querySelectorAll('a').forEach((a) => a.addEventListener('click', closeMenu));
+
+  // عند الضغط على رابط: نقفل القائمة، ونترك المتصفح ينتقل للرابط
+  links.querySelectorAll('a').forEach((a) => {
+    a.addEventListener('click', (e) => {
+      const href = a.getAttribute('href') || '';
+      // نقفل الشكل بس بدون منع الانتقال
+      closeMenu();
+      // لو الرابط لقسم بنفس الصفحة (#...) ننزّل له يدوياً بعد الإغلاق
+      if (href.startsWith('#')) {
+        e.preventDefault();
+        const target = document.querySelector(href);
+        if (target) {
+          setTimeout(() => target.scrollIntoView({ behavior: 'smooth' }), 50);
+        }
+      }
+      // روابط الصفحات (index.html, about.html …) تشتغل عادي — ما نمنعها
+    });
+  });
 })();
