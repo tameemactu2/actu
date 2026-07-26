@@ -55,6 +55,7 @@
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="js/config.js"></script>
+  <script src="js/gallery.js"></script>
   <script>
     (async function () {
       const params = new URLSearchParams(location.search);
@@ -76,17 +77,16 @@
 
       document.getElementById('page-title').textContent = data.title + ' · نادي العلوم الاكتوارية';
       const dateStr = data.published_at ? formatDateAr(String(data.published_at).slice(0, 10)) : '';
-      const img = data.image_url
-        ? `<img class="detail-hero-img" src="${escapeHtml(data.image_url)}" alt="${escapeHtml(data.title)}" />`
-        : '';
+      const images = (data.images && data.images.length) ? data.images : (data.image_url ? [data.image_url] : []);
 
       el.innerHTML = `
         <a class="detail-back" href="index.html#articles">→ العودة للمقالات</a>
-        ${img}
+        ${galleryHtml(images)}
         <h1>${escapeHtml(data.title)}</h1>
         ${dateStr ? `<div class="detail-sub"><span class="num">📅 ${dateStr}</span></div>` : ''}
         <div class="detail-content">${escapeHtml(data.content || '')}</div>
       `;
+      initGallery(images.length);
     })();
   </script>
 </body>

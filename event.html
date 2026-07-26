@@ -55,6 +55,7 @@
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="js/config.js"></script>
+  <script src="js/gallery.js"></script>
   <script>
     (async function () {
       const params = new URLSearchParams(location.search);
@@ -79,13 +80,11 @@
       const tag = st === 'upcoming'
         ? '<span class="tag tag-upcoming">قادمة</span>'
         : '<span class="tag tag-past">منتهية</span>';
-      const img = data.image_url
-        ? `<img class="detail-hero-img" src="${escapeHtml(data.image_url)}" alt="${escapeHtml(data.title)}" />`
-        : '';
+      const images = (data.images && data.images.length) ? data.images : (data.image_url ? [data.image_url] : []);
 
       el.innerHTML = `
         <a class="detail-back" href="index.html#events">→ العودة للفعاليات</a>
-        ${img}
+        ${galleryHtml(images)}
         <div class="detail-meta">${tag}</div>
         <h1>${escapeHtml(data.title)}</h1>
         <div class="detail-sub">
@@ -94,6 +93,7 @@
         </div>
         <div class="detail-content">${escapeHtml(data.description || '')}</div>
       `;
+      initGallery(images.length);
     })();
   </script>
 </body>

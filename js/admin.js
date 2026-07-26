@@ -71,22 +71,41 @@ async function uploadImage(file, folder) {
   return data.publicUrl;
 }
 
-function bindImagePreview(inputId, previewId) {
+// رفع عدة صور، يرجّع قائمة روابط بالترتيب
+async function uploadImages(files, folder) {
+  const urls = [];
+  for (const file of files) {
+    urls.push(await uploadImage(file, folder));
+  }
+  return urls;
+}
+
+// معاينة عدة صور (الجديدة + الموجودة عند التعديل)
+function renderPreview(previewEl, newFiles, existingUrls) {
+  previewEl.innerHTML = '';
+  (existingUrls || []).forEach((url) => {
+    const img = document.createElement('img');
+    img.src = url;
+    img.alt = 'صورة حالية';
+    previewEl.appendChild(img);
+  });
+  Array.from(newFiles || []).forEach((file) => {
+    const img = document.createElement('img');
+    img.src = URL.createObjectURL(file);
+    img.alt = 'صورة جديدة';
+    previewEl.appendChild(img);
+  });
+}
+
+function bindImagePreview(inputId, previewId, getExisting) {
   const input = document.getElementById(inputId);
   const preview = document.getElementById(previewId);
   input.addEventListener('change', () => {
-    preview.innerHTML = '';
-    const file = input.files[0];
-    if (file) {
-      const img = document.createElement('img');
-      img.src = URL.createObjectURL(file);
-      img.alt = 'معاينة الصورة';
-      preview.appendChild(img);
-    }
+    renderPreview(preview, input.files, getExisting ? getExisting() : []);
   });
 }
-bindImagePreview('ev-image', 'ev-image-preview');
-bindImagePreview('ar-image', 'ar-image-preview');
+bindImagePreview('ev-image', 'ev-image-preview', () => editingEventImages);
+bindImagePreview('ar-image', 'ar-image-preview', () => editingArticleImages);
 
 // ================= التبويبات =================
 document.querySelectorAll('.admin-tabs .filter-btn').forEach((btn) => {
@@ -99,7 +118,7 @@ document.querySelectorAll('.admin-tabs .filter-btn').forEach((btn) => {
 });
 
 // ================= الفعاليات =================
-let editingEventImageUrl = null;
+let editingEventImages = [];
 
 async function loadAdminEvents() {
   const list = document.getElementById('admin-events-list');
@@ -152,10 +171,8 @@ function startEditEvent(ev) {
   document.getElementById('ev-status').value = ev.status === 'past' ? 'past' : 'upcoming';
   document.getElementById('ev-desc').value = ev.description || '';
   document.getElementById('ev-image').value = '';
-  document.getElementById('ev-image-preview').innerHTML = ev.image_url
-    ? `<img src="${escapeHtml(ev.image_url)}" alt="الصورة الحالية" />`
-    : '';
-  editingEventImageUrl = ev.image_url || null;
+  editingEventImages = ev.images && ev.images.length ? ev.images.slice() : (ev.image_url ? [ev.image_url] : []);
+  renderPreview(document.getElementById('ev-image-preview'), [], editingEventImages);
   document.getElementById('event-form-title').textContent = 'تعديل الفعالية';
   document.getElementById('ev-cancel').classList.remove('hidden');
   window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -166,7 +183,7 @@ function resetEventForm() {
   document.getElementById('ev-status').value = 'upcoming';
   document.getElementById('ev-image').value = '';
   document.getElementById('ev-image-preview').innerHTML = '';
-  editingEventImageUrl = null;
+  editingEventImages = [];
   document.getElementById('event-form-title').textContent = 'إضافة فعالية جديدة';
   document.getElementById('ev-cancel').classList.add('hidden');
 }
@@ -180,7 +197,7 @@ document.getElementById('ev-save').addEventListener('click', async () => {
   const location = document.getElementById('ev-location').value.trim();
   const status = document.getElementById('ev-status').value;
   const description = document.getElementById('ev-desc').value.trim();
-  const file = document.getElementById('ev-image').files[0];
+  const files = document.getElementById('ev-image').files;
 
   if (!title || !event_date) {
     showAlert(adminAlert, 'العنوان والتاريخ مطلوبان.');
@@ -192,10 +209,15 @@ document.getElementById('ev-save').addEventListener('click', async () => {
   btn.textContent = 'جارٍ الحفظ…';
 
   try {
-    let image_url = editingEventImageUrl;
-    if (file) image_url = await uploadImage(file, 'events');
+    // الصور الموجودة + الصور الجديدة المرفوعة
+    let images = editingEventImages.slice();
+    if (files.length) {
+      const newUrls = await uploadImages(files, 'events');
+      images = images.concat(newUrls);
+    }
+    const image_url = images[0] || null; // أول صورة = صورة الغلاف
 
-    const payload = { title, event_date, location, status, description, image_url };
+    const payload = { title, event_date, location, status, description, image_url, images };
     let error;
     if (id) {
       ({ error } = await sb.from('events').update(payload).eq('id', id));
@@ -229,7 +251,7 @@ async function deleteEvent(ev) {
 }
 
 // ================= المقالات =================
-let editingArticleImageUrl = null;
+let editingArticleImages = [];
 
 async function loadAdminArticles() {
   const list = document.getElementById('admin-articles-list');
@@ -277,10 +299,8 @@ function startEditArticle(a) {
   document.getElementById('ar-title').value = a.title || '';
   document.getElementById('ar-content').value = a.content || '';
   document.getElementById('ar-image').value = '';
-  document.getElementById('ar-image-preview').innerHTML = a.image_url
-    ? `<img src="${escapeHtml(a.image_url)}" alt="الصورة الحالية" />`
-    : '';
-  editingArticleImageUrl = a.image_url || null;
+  editingArticleImages = a.images && a.images.length ? a.images.slice() : (a.image_url ? [a.image_url] : []);
+  renderPreview(document.getElementById('ar-image-preview'), [], editingArticleImages);
   document.getElementById('article-form-title').textContent = 'تعديل المقال';
   document.getElementById('ar-cancel').classList.remove('hidden');
   window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -290,7 +310,7 @@ function resetArticleForm() {
   ['article-id', 'ar-title', 'ar-content'].forEach((id) => (document.getElementById(id).value = ''));
   document.getElementById('ar-image').value = '';
   document.getElementById('ar-image-preview').innerHTML = '';
-  editingArticleImageUrl = null;
+  editingArticleImages = [];
   document.getElementById('article-form-title').textContent = 'إضافة مقال جديد';
   document.getElementById('ar-cancel').classList.add('hidden');
 }
@@ -301,7 +321,7 @@ document.getElementById('ar-save').addEventListener('click', async () => {
   const id = document.getElementById('article-id').value;
   const title = document.getElementById('ar-title').value.trim();
   const content = document.getElementById('ar-content').value.trim();
-  const file = document.getElementById('ar-image').files[0];
+  const files = document.getElementById('ar-image').files;
 
   if (!title || !content) {
     showAlert(adminAlert, 'العنوان والمحتوى مطلوبان.');
@@ -313,10 +333,14 @@ document.getElementById('ar-save').addEventListener('click', async () => {
   btn.textContent = 'جارٍ النشر…';
 
   try {
-    let image_url = editingArticleImageUrl;
-    if (file) image_url = await uploadImage(file, 'articles');
+    let images = editingArticleImages.slice();
+    if (files.length) {
+      const newUrls = await uploadImages(files, 'articles');
+      images = images.concat(newUrls);
+    }
+    const image_url = images[0] || null;
 
-    const payload = { title, content, image_url };
+    const payload = { title, content, image_url, images };
     let error;
     if (id) {
       ({ error } = await sb.from('articles').update(payload).eq('id', id));
