@@ -136,6 +136,7 @@
           </div>
           <div class="form-actions">
             <button id="ev-save" class="btn btn-green">حفظ الفعالية</button>
+            <button id="ev-preview" class="btn btn-outline-teal">معاينة</button>
             <button id="ev-cancel" class="btn btn-ghost hidden">إلغاء التعديل</button>
           </div>
         </div>
@@ -171,6 +172,7 @@
           </div>
           <div class="form-actions">
             <button id="ar-save" class="btn btn-green">نشر المقال</button>
+            <button id="ar-preview" class="btn btn-outline-teal">معاينة</button>
             <button id="ar-cancel" class="btn btn-ghost hidden">إلغاء التعديل</button>
           </div>
         </div>
@@ -185,9 +187,22 @@
     </div>
   </div>
 
+  <!-- نافذة المعاينة -->
+  <div id="preview-modal" class="preview-modal hidden">
+    <div class="preview-backdrop" id="preview-close-bg"></div>
+    <div class="preview-dialog">
+      <div class="preview-bar">
+        <span>معاينة قبل النشر</span>
+        <button class="preview-x" id="preview-close" aria-label="إغلاق">×</button>
+      </div>
+      <div class="preview-body detail" id="preview-content"></div>
+    </div>
+  </div>
+
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="https://cdn.jsdelivr.net/npm/quill@2.0.3/dist/quill.js"></script>
   <script src="js/config.js"></script>
+  <script src="js/gallery.js"></script>
   <script src="js/admin.js"></script>
 </body>
 </html>

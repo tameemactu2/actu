@@ -473,5 +473,72 @@ async function deleteArticle(a) {
   loadAdminArticles();
 }
 
+// ================= المعاينة قبل النشر =================
+function previewImages(existingUrls, pendingFiles) {
+  // روابط الصور الموجودة + معاينة الملفات الجديدة (blob) بالترتيب
+  const urls = (existingUrls || []).slice();
+  (pendingFiles || []).forEach((f) => urls.push(URL.createObjectURL(f)));
+  return urls;
+}
+
+function openPreview(html) {
+  const modal = document.getElementById('preview-modal');
+  document.getElementById('preview-content').innerHTML = html;
+  // فعّل السلايدر لو فيه معرض
+  const track = document.getElementById('gallery-track');
+  if (track) initGallery(track.querySelectorAll('.gallery-slide').length);
+  modal.classList.remove('hidden');
+  document.body.style.overflow = 'hidden';
+}
+
+function closePreview() {
+  document.getElementById('preview-modal').classList.add('hidden');
+  document.body.style.overflow = '';
+}
+
+document.getElementById('preview-close').addEventListener('click', closePreview);
+document.getElementById('preview-close-bg').addEventListener('click', closePreview);
+
+// معاينة الفعالية
+document.getElementById('ev-preview').addEventListener('click', () => {
+  const title = document.getElementById('ev-title').value.trim() || '(بدون عنوان)';
+  const event_date = document.getElementById('ev-date').value;
+  const location = document.getElementById('ev-location').value.trim();
+  const status = document.getElementById('ev-status').value;
+  const description = (evEditor && evEditor.getText().trim()) ? evEditor.root.innerHTML : '';
+  const images = previewImages(editingEventImages, pendingEventFiles);
+
+  const st = status === 'past' ? 'past' : 'upcoming';
+  const tag = st === 'upcoming'
+    ? '<span class="tag tag-upcoming">قادمة</span>'
+    : '<span class="tag tag-past">منتهية</span>';
+
+  const html = `
+    ${galleryHtml(images)}
+    <div class="detail-meta">${tag}</div>
+    <h1>${escapeHtml(title)}</h1>
+    <div class="detail-sub">
+      ${event_date ? `<span class="num">📅 ${formatDateAr(event_date)}</span>` : ''}
+      ${location ? `<span>📍 ${escapeHtml(location)}</span>` : ''}
+    </div>
+    <div class="detail-content rich-content">${description}</div>`;
+  openPreview(html);
+});
+
+// معاينة المقال
+document.getElementById('ar-preview').addEventListener('click', () => {
+  const title = document.getElementById('ar-title').value.trim() || '(بدون عنوان)';
+  const content = (arEditor && arEditor.getText().trim()) ? arEditor.root.innerHTML : '';
+  const images = previewImages(editingArticleImages, pendingArticleFiles);
+  const dateStr = formatDateAr(new Date().toISOString().slice(0, 10));
+
+  const html = `
+    ${galleryHtml(images)}
+    <h1>${escapeHtml(title)}</h1>
+    <div class="detail-sub"><span class="num">📅 ${dateStr}</span></div>
+    <div class="detail-content rich-content">${content}</div>`;
+  openPreview(html);
+});
+
 // بدء التشغيل
 refreshAuthUI();
