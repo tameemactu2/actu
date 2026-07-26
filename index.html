@@ -20,11 +20,27 @@
   </div>
   <script>
     (function () {
+      // نمنع المتصفح من استعادة موضع التمرير القديم (سبب القفزة)
+      if ('scrollHistory' in window) {}
+      try { history.scrollRestoration = 'manual'; } catch (e) {}
+      // نقفل التمرير أثناء ظهور شاشة التحميل
+      document.documentElement.style.overflow = 'hidden';
+
+      var hidden = false;
       function hide() {
+        if (hidden) return;
+        hidden = true;
+        window.scrollTo(0, 0);            // نرجّع لفوق قبل الإخفاء
+        document.documentElement.style.overflow = '';
         var p = document.getElementById('preloader');
         if (p) p.classList.add('done');
       }
-      window.addEventListener('load', function () { setTimeout(hide, 300); });
+
+      window.addEventListener('load', function () {
+        window.scrollTo(0, 0);
+        // نعطي فريم واحد عشان يستقر التخطيط ثم نخفي
+        requestAnimationFrame(function () { setTimeout(hide, 200); });
+      });
       // احتياط: يختفي بعد ثانيتين مهما صار
       setTimeout(hide, 2000);
     })();
@@ -44,8 +60,6 @@
         <a href="#events">الفعاليات</a>
         <a href="#articles">المقالات</a>
         <a href="#about">من نحن</a>
-        <a href="#strategy">الأهداف</a>
-        <a href="#plan">الخطة</a>
       </div>
     </div>
   </nav>
@@ -97,7 +111,7 @@
     </div>
   </section>
 
-  <!-- من نحن -->
+  <!-- من نحن (يشمل الرؤية والأهداف والخطة) -->
   <section id="about" class="section section-dark" style="background: var(--teal);">
     <div class="container">
       <div class="section-head">
@@ -150,17 +164,13 @@
         <span class="value-chip">المبادرة</span>
         <span class="value-chip">المسؤولية</span>
       </div>
-    </div>
-  </section>
 
-  <!-- الأهداف الاستراتيجية -->
-  <section id="strategy" class="section">
-    <div class="container">
-      <div class="section-head">
-        <h2>الأهداف الاستراتيجية</h2>
+      <!-- الأهداف الاستراتيجية -->
+      <div class="subsection-head">
+        <h3>الأهداف الاستراتيجية</h3>
         <p>خمسة أهداف توجّه عمل النادي وآلية تحقيق كل هدف.</p>
       </div>
-      <div class="goals-list">
+      <div class="goals-list goals-on-dark">
         <div class="goal-item">
           <span class="goal-num num">1</span>
           <div class="goal-body">
@@ -197,38 +207,34 @@
           </div>
         </div>
       </div>
-    </div>
-  </section>
 
-  <!-- الخطة التشغيلية -->
-  <section id="plan" class="section section-dark">
-    <div class="container">
-      <div class="section-head">
-        <h2>الخطة التشغيلية</h2>
+      <!-- الخطة التشغيلية -->
+      <div class="subsection-head">
+        <h3>الخطة التشغيلية</h3>
         <p>خمسة محاور تشغيلية تغطي عمل النادي على مدار العام.</p>
       </div>
       <div class="plan-grid">
-        <div class="plan-card">
+        <div class="plan-card plan-card-alt">
           <span class="plan-num num">1</span>
           <h4>التواصل والشراكات</h4>
           <p>بناء العلاقات مع الجهات المهنية والتنظيمية وإدارة الرعايات.</p>
         </div>
-        <div class="plan-card">
+        <div class="plan-card plan-card-alt">
           <span class="plan-num num">2</span>
           <h4>البحث والمحتوى</h4>
           <p>إنتاج المحتوى العلمي والمبادرات والتقارير البحثية.</p>
         </div>
-        <div class="plan-card">
+        <div class="plan-card plan-card-alt">
           <span class="plan-num num">3</span>
           <h4>الأنشطة والفعاليات</h4>
           <p>اللقاءات والندوات والزيارات الميدانية والمسابقات.</p>
         </div>
-        <div class="plan-card">
+        <div class="plan-card plan-card-alt">
           <span class="plan-num num">4</span>
           <h4>التطوير المهني والاختبارات</h4>
           <p>دعم مسار التحضير وأدوات <span class="en">SOA</span> مثل <span class="en">Coaching Actuaries</span>.</p>
         </div>
-        <div class="plan-card">
+        <div class="plan-card plan-card-alt">
           <span class="plan-num num">5</span>
           <h4>التدريب وبناء المهارات</h4>
           <p>ورش تقنية تطبيقية لبناء مهارات الأعضاء.</p>

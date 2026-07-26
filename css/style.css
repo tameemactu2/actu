@@ -603,6 +603,10 @@ button { font-family: inherit; cursor: pointer; }
   padding: 22px 20px;
   border-top: 4px solid var(--fresh);
 }
+/* عند الوضع الداكن (داخل قسم من نحن) نخلي البطاقة أغمق للتباين */
+.plan-card-alt {
+  background: var(--petrol);
+}
 .plan-num {
   display: inline-flex;
   align-items: center;
@@ -617,6 +621,31 @@ button { font-family: inherit; cursor: pointer; }
 }
 .plan-card h4 { color: var(--mint); font-weight: 700; font-size: 1rem; margin-bottom: 6px; }
 .plan-card p { color: rgba(244, 244, 241, 0.75); font-size: 0.9rem; }
+
+/* ---------- Subsection header (inside a section) ---------- */
+.subsection-head { margin: 48px 0 24px; }
+.subsection-head h3 {
+  font-size: 1.4rem;
+  font-weight: 800;
+  color: var(--offwhite);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.subsection-head h3::before {
+  content: '';
+  width: 26px;
+  height: 4px;
+  border-radius: 4px;
+  background: linear-gradient(90deg, var(--green), var(--fresh));
+  flex-shrink: 0;
+}
+.subsection-head p { color: rgba(244, 244, 241, 0.7); margin-top: 6px; }
+
+/* عند وضع قائمة الأهداف على خلفية داكنة */
+.goals-on-dark .goal-item { background: var(--petrol); box-shadow: none; }
+.goals-on-dark .goal-body h4 { color: var(--offwhite); }
+.goals-on-dark .goal-body p { color: rgba(244, 244, 241, 0.72); }
 
 /* ---------- Clickable cards ---------- */
 .card-link { display: block; color: inherit; text-decoration: none; height: 100%; }

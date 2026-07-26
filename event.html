@@ -19,12 +19,21 @@
   </div>
   <script>
     (function () {
+      try { history.scrollRestoration = 'manual'; } catch (e) {}
+      document.documentElement.style.overflow = 'hidden';
+      var hidden = false;
       function hide() {
+        if (hidden) return;
+        hidden = true;
+        window.scrollTo(0, 0);
+        document.documentElement.style.overflow = '';
         var p = document.getElementById('preloader');
         if (p) p.classList.add('done');
       }
-      window.addEventListener('load', function () { setTimeout(hide, 300); });
-      // احتياط: يختفي بعد ثانيتين مهما صار
+      window.addEventListener('load', function () {
+        window.scrollTo(0, 0);
+        requestAnimationFrame(function () { setTimeout(hide, 200); });
+      });
       setTimeout(hide, 2000);
     })();
   </script>
