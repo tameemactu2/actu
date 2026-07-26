@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>تسجيل دخول الهوست · نادي العلوم الاكتوارية</title>
+  <meta name="robots" content="noindex" />
+  <meta name="theme-color" content="#00292E" />
+  <link rel="icon" type="image/png" href="assets/logo-badge-dark.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+
+  <nav class="navbar">
+    <div class="container nav-inner">
+      <a href="index.html" class="brand">
+        <img src="assets/logo.png" alt="شعار نادي العلوم الاكتوارية" />
+        <span class="brand-name">
+          نادي العلوم الاكتوارية
+          <span class="brand-sub en">Actuarial Science Club · KSU</span>
+        </span>
+      </a>
+      <div class="nav-links">
+        <a href="index.html">الصفحة الرئيسية</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- ===== شاشة تسجيل الدخول ===== -->
+  <div id="login-view" class="auth-wrap">
+    <div class="auth-card">
+      <img class="logo" src="assets/logo-badge-dark.png" alt="" />
+      <h1>تسجيل دخول الهوست</h1>
+      <p class="sub">لمشرفي ومنظمي النادي فقط</p>
+      <div id="login-alert" class="alert alert-error"></div>
+      <div class="field">
+        <label for="email">البريد الإلكتروني</label>
+        <input type="email" id="email" autocomplete="username" placeholder="host@example.com" />
+      </div>
+      <div class="field">
+        <label for="password">كلمة المرور</label>
+        <input type="password" id="password" autocomplete="current-password" />
+      </div>
+      <button id="login-btn" class="btn btn-green" style="width:100%;">دخول</button>
+    </div>
+  </div>
+
+  <!-- ===== لوحة التحكم ===== -->
+  <div id="admin-view" class="hidden">
+    <div class="admin-bar">
+      <div class="container">
+        <div>لوحة تحكم الهوست</div>
+        <div style="display:flex; align-items:center; gap:14px;">
+          <span class="who" id="who"></span>
+          <button id="logout-btn" class="btn btn-outline-mint btn-sm">تسجيل الخروج</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="admin-section container">
+      <div id="admin-alert" class="alert"></div>
+
+      <div class="admin-tabs">
+        <button class="filter-btn active" data-tab="events-tab">الفعاليات</button>
+        <button class="filter-btn" data-tab="articles-tab">المقالات</button>
+      </div>
+
+      <!-- ===== تبويب الفعاليات ===== -->
+      <div id="events-tab">
+        <div class="admin-panel">
+          <h3 id="event-form-title">إضافة فعالية جديدة</h3>
+          <input type="hidden" id="event-id" />
+          <div class="form-row">
+            <div class="field">
+              <label for="ev-title">عنوان الفعالية</label>
+              <input type="text" id="ev-title" placeholder="مثال: ورشة تحضير Exam FM" />
+            </div>
+            <div class="field">
+              <label for="ev-date">التاريخ</label>
+              <input type="date" id="ev-date" class="num" />
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="field">
+              <label for="ev-location">الموقع</label>
+              <input type="text" id="ev-location" placeholder="مثال: كلية العلوم · قاعة 2ب45" />
+            </div>
+            <div class="field">
+              <label for="ev-status">الحالة</label>
+              <select id="ev-status">
+                <option value="upcoming">قادمة</option>
+                <option value="past">منتهية</option>
+              </select>
+            </div>
+          </div>
+          <div class="field">
+            <label for="ev-desc">وصف مختصر</label>
+            <textarea id="ev-desc" placeholder="سطر أو سطرين عن الفعالية…"></textarea>
+          </div>
+          <div class="field">
+            <label>صورة الفعالية (اختياري)</label>
+            <label class="upload-box" for="ev-image">
+              اضغط لاختيار صورة من جهازك (JPG / PNG / WebP)
+              <input type="file" id="ev-image" accept="image/*" class="hidden" />
+            </label>
+            <div class="upload-preview" id="ev-image-preview"></div>
+          </div>
+          <div class="form-actions">
+            <button id="ev-save" class="btn btn-green">حفظ الفعالية</button>
+            <button id="ev-cancel" class="btn btn-ghost hidden">إلغاء التعديل</button>
+          </div>
+        </div>
+
+        <div class="admin-panel">
+          <h3>الفعاليات الحالية</h3>
+          <div id="admin-events-list" class="admin-list">
+            <div class="loader">جارٍ التحميل…</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ===== تبويب المقالات ===== -->
+      <div id="articles-tab" class="hidden">
+        <div class="admin-panel">
+          <h3 id="article-form-title">إضافة مقال جديد</h3>
+          <input type="hidden" id="article-id" />
+          <div class="field">
+            <label for="ar-title">عنوان المقال</label>
+            <input type="text" id="ar-title" placeholder="مثال: وش يعني اكتواري؟" />
+          </div>
+          <div class="field">
+            <label for="ar-content">محتوى المقال</label>
+            <textarea id="ar-content" style="min-height:180px;" placeholder="نص المقال…"></textarea>
+          </div>
+          <div class="field">
+            <label>صورة المقال (اختياري)</label>
+            <label class="upload-box" for="ar-image">
+              اضغط لاختيار صورة من جهازك (JPG / PNG / WebP)
+              <input type="file" id="ar-image" accept="image/*" class="hidden" />
+            </label>
+            <div class="upload-preview" id="ar-image-preview"></div>
+          </div>
+          <div class="form-actions">
+            <button id="ar-save" class="btn btn-green">نشر المقال</button>
+            <button id="ar-cancel" class="btn btn-ghost hidden">إلغاء التعديل</button>
+          </div>
+        </div>
+
+        <div class="admin-panel">
+          <h3>المقالات المنشورة</h3>
+          <div id="admin-articles-list" class="admin-list">
+            <div class="loader">جارٍ التحميل…</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="js/config.js"></script>
+  <script src="js/admin.js"></script>
+</body>
+</html>

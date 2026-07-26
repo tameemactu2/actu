@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>نادي العلوم الاكتوارية · جامعة الملك سعود</title>
+  <meta name="description" content="نادي طلابي في جامعة الملك سعود يربط طلبة العلوم الاكتوارية بمسارات اختبارات SOA والتحليل المالي وإدارة المخاطر." />
+  <meta name="theme-color" content="#00292E" />
+  <link rel="icon" type="image/png" href="assets/logo-badge-dark.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+
+  <!-- شريط التنقل -->
+  <nav class="navbar">
+    <div class="container nav-inner">
+      <a href="index.html" class="brand">
+        <img src="assets/logo.png" alt="شعار نادي العلوم الاكتوارية" />
+        <span class="brand-name">
+          نادي العلوم الاكتوارية
+          <span class="brand-sub en">Actuarial Science Club · KSU</span>
+        </span>
+      </a>
+      <div class="nav-links">
+        <a href="#events">الفعاليات</a>
+        <a href="#articles">المقالات</a>
+        <a href="#about">من نحن</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- الهيرو -->
+  <header class="hero">
+    <div class="container hero-inner">
+      <span class="hero-eyebrow">نادٍ طلابي · جامعة الملك سعود</span>
+      <h1>نادي العلوم الاكتوارية</h1>
+      <div class="hero-en en">Actuarial Science Club — King Saud University</div>
+      <div class="hero-tagline">نحو مستقبل اكتواري مستدام</div>
+      <div class="hero-actions">
+        <a href="#events" class="btn btn-mint">تصفح الفعاليات</a>
+        <a href="#about" class="btn btn-outline-mint">تعرف علينا</a>
+      </div>
+    </div>
+  </header>
+
+  <!-- الفعاليات -->
+  <section id="events" class="section">
+    <div class="container">
+      <div class="section-head">
+        <h2>فعاليات النادي</h2>
+        <p>جميع فعاليات العام: ورش عمل، لقاءات مع اكتواريين، زيارات ميدانية، ومسابقات معرفية.</p>
+      </div>
+
+      <div class="filters" role="tablist" aria-label="تصفية الفعاليات">
+        <button class="filter-btn active" data-filter="all">الكل</button>
+        <button class="filter-btn" data-filter="upcoming">القادمة</button>
+        <button class="filter-btn" data-filter="past">المنتهية</button>
+      </div>
+
+      <div id="events-grid" class="events-grid">
+        <div class="loader">جارٍ تحميل الفعاليات…</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- المقالات -->
+  <section id="articles" class="section section-dark">
+    <div class="container">
+      <div class="section-head">
+        <h2>مقالات النادي</h2>
+        <p>محتوى علمي وتوعوي مبسّط في العلوم الاكتوارية والمالية.</p>
+      </div>
+      <div id="articles-grid" class="articles-grid">
+        <div class="loader">جارٍ تحميل المقالات…</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- من نحن -->
+  <section id="about" class="section section-dark" style="background: var(--teal);">
+    <div class="container">
+      <div class="section-head">
+        <h2>من نحن</h2>
+      </div>
+      <div class="about-grid">
+        <div class="about-text">
+          <p>
+            نادي العلوم الاكتوارية نادٍ طلابي في جامعة الملك سعود، يهدف إلى ربط طلبة
+            الرياضيات الاكتوارية والمالية بسوق العمل: من مسارات اختبارات جمعية الاكتواريين
+            <span class="en">SOA</span> — بدءاً من اختبار
+            <span class="en">Exam FM</span> — إلى التحليل المالي وإدارة المخاطر.
+            نبني هذا الطريق عبر ورش عمل تطبيقية، ولقاءات مع اكتواريين ممارسين،
+            ومسابقات معرفية تصقل مهارات الأعضاء وتوسّع شبكة علاقاتهم المهنية.
+          </p>
+        </div>
+        <div class="about-cards">
+          <div class="about-card">
+            <h4>ورش عمل</h4>
+            <p>ورش تطبيقية في الاختبارات المهنية والأدوات الاكتوارية والمالية.</p>
+          </div>
+          <div class="about-card">
+            <h4>لقاءات مهنية</h4>
+            <p>جلسات مع اكتواريين ممارسين وزيارات ميدانية لجهات تنظيمية وخدمية.</p>
+          </div>
+          <div class="about-card">
+            <h4>مسابقات معرفية</h4>
+            <p>منافسات تحفّز الطلبة وتعمّق فهمهم للتخصص وتطبيقاته.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- الفوتر -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-inner">
+        <div class="footer-brand">
+          <img src="assets/logo.png" alt="" />
+          <div>
+            <strong>نادي العلوم الاكتوارية</strong>
+            <span>جامعة الملك سعود · الرياض</span>
+          </div>
+        </div>
+        <div class="footer-social">
+          <a href="#" aria-label="حساب النادي في X" title="X">
+            <svg viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+          </a>
+          <a href="#" aria-label="حساب النادي في لينكدإن" title="LinkedIn">
+            <svg viewBox="0 0 24 24"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455zM5.337 7.433a2.062 2.062 0 1 1 0-4.124 2.062 2.062 0 0 1 0 4.124zM7.119 20.452H3.555V9h3.564zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0z"/></svg>
+          </a>
+          <a href="mailto:afmclub.ksu@gmail.com" aria-label="راسلنا عبر البريد" title="البريد الإلكتروني">
+            <svg viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4-8 5-8-5V6l8 5 8-5v2z"/></svg>
+          </a>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        نادي العلوم الاكتوارية · جامعة الملك سعود — جميع الحقوق محفوظة © <span class="num">2026</span>
+      </div>
+    </div>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="js/config.js"></script>
+  <script src="js/main.js"></script>
+</body>
+</html>
