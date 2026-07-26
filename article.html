@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title id="page-title">مقال · نادي العلوم الاكتوارية</title>
+  <meta name="theme-color" content="#00292E" />
+  <link rel="icon" type="image/png" href="assets/logo-badge-dark.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+
+  <nav class="navbar" id="navbar">
+    <div class="container nav-inner">
+      <a href="index.html" class="brand">
+        <img src="assets/logo.png" alt="شعار نادي العلوم الاكتوارية" />
+        <span class="brand-name">
+          نادي العلوم الاكتوارية
+          <span class="brand-sub en">Actuarial Science Club · KSU</span>
+        </span>
+      </a>
+      <div class="nav-links">
+        <a href="index.html#events">الفعاليات</a>
+        <a href="index.html#articles">المقالات</a>
+        <a href="index.html#about">من نحن</a>
+      </div>
+    </div>
+  </nav>
+
+  <main class="detail">
+    <div class="container" id="content">
+      <div class="detail-loading">جارٍ تحميل المقال…</div>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-inner">
+        <div class="footer-brand">
+          <img src="assets/logo.png" alt="" />
+          <div>
+            <strong>نادي العلوم الاكتوارية</strong>
+            <span>جامعة الملك سعود · الرياض</span>
+          </div>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        نادي العلوم الاكتوارية · جامعة الملك سعود — جميع الحقوق محفوظة © <span class="num">2026</span>
+      </div>
+    </div>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="js/config.js"></script>
+  <script>
+    (async function () {
+      const params = new URLSearchParams(location.search);
+      const id = params.get('id');
+      const el = document.getElementById('content');
+
+      if (!id) {
+        el.innerHTML = `<div class="detail-loading">ما تم تحديد المقال. <a class="detail-back" href="index.html#articles">العودة للمقالات</a></div>`;
+        return;
+      }
+
+      const { data, error } = await sb.from('articles').select('*').eq('id', id).single();
+
+      if (error || !data) {
+        el.innerHTML = `<div class="detail-loading">تعذّر العثور على المقال. <a class="detail-back" href="index.html#articles">العودة للمقالات</a></div>`;
+        if (error) console.error(error);
+        return;
+      }
+
+      document.getElementById('page-title').textContent = data.title + ' · نادي العلوم الاكتوارية';
+      const dateStr = data.published_at ? formatDateAr(String(data.published_at).slice(0, 10)) : '';
+      const img = data.image_url
+        ? `<img class="detail-hero-img" src="${escapeHtml(data.image_url)}" alt="${escapeHtml(data.title)}" />`
+        : '';
+
+      el.innerHTML = `
+        <a class="detail-back" href="index.html#articles">→ العودة للمقالات</a>
+        ${img}
+        <h1>${escapeHtml(data.title)}</h1>
+        ${dateStr ? `<div class="detail-sub"><span class="num">📅 ${dateStr}</span></div>` : ''}
+        <div class="detail-content">${escapeHtml(data.content || '')}</div>
+      `;
+    })();
+  </script>
+</body>
+</html>

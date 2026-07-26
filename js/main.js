@@ -49,6 +49,7 @@ function renderEvents() {
         ? `<img src="${escapeHtml(ev.image_url)}" alt="${escapeHtml(ev.title)}" loading="lazy" />`
         : `<div class="img-fallback"><img src="assets/mark.png" alt="" /></div>`;
       return `
+      <a class="card-link" href="event.html?id=${encodeURIComponent(ev.id)}">
       <article class="event-card">
         <div class="event-img">${img}</div>
         <div class="event-body">
@@ -60,7 +61,8 @@ function renderEvents() {
           <p>${escapeHtml(ev.description || '')}</p>
           ${ev.location ? `<div class="event-loc">📍 ${escapeHtml(ev.location)}</div>` : ''}
         </div>
-      </article>`;
+      </article>
+      </a>`;
     })
     .join('');
 }
@@ -95,6 +97,7 @@ async function loadArticles() {
       const excerpt = (a.content || '').slice(0, 140) + ((a.content || '').length > 140 ? '…' : '');
       const dateStr = a.published_at ? formatDateAr(String(a.published_at).slice(0, 10)) : '';
       return `
+      <a class="card-link" href="article.html?id=${encodeURIComponent(a.id)}">
       <article class="article-card">
         <div class="event-img">${img}</div>
         <div class="article-body">
@@ -102,7 +105,8 @@ async function loadArticles() {
           <p>${escapeHtml(excerpt)}</p>
           ${dateStr ? `<time class="num">${dateStr}</time>` : ''}
         </div>
-      </article>`;
+      </article>
+      </a>`;
     })
     .join('');
 }
