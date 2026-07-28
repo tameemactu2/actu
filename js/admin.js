@@ -698,9 +698,17 @@ document.getElementById('sc-save').addEventListener('click', async () => {
     rows.push({ key: 'about_cards', value: JSON.stringify(scCards) });
     rows.push({ key: 'about_goals', value: JSON.stringify(scGoals) });
 
-    // upsert كل الصفوف دفعة واحدة
-    const { error } = await sb.from('site_content').upsert(rows, { onConflict: 'key' });
-    if (error) throw error;
+    // حفظ كل مفتاح على حدة (update لو موجود، insert لو ما موجود)
+    for (const row of rows) {
+      const { data: existing } = await sb.from('site_content').select('key').eq('key', row.key).single();
+      let error;
+      if (existing) {
+        ({ error } = await sb.from('site_content').update({ value: row.value }).eq('key', row.key));
+      } else {
+        ({ error } = await sb.from('site_content').insert(row));
+      }
+      if (error) throw error;
+    }
 
     showAlert(adminAlert, 'تم حفظ محتوى الموقع بنجاح.', true);
   } catch (err) {
