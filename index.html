@@ -159,6 +159,11 @@
         'hero_eyebrow', 'hero_title', 'hero_en', 'hero_tagline',
         'footer_x', 'footer_linkedin', 'footer_email'
       ]);
+      // القيم الافتراضية لو الجدول ما موجود بعد
+      if (!c.hero_eyebrow) c.hero_eyebrow = 'نادٍ طلابي · جامعة الملك سعود';
+      if (!c.hero_title) c.hero_title = 'نادي العلوم الاكتوارية';
+      if (!c.hero_en) c.hero_en = 'Actuarial Science Club — King Saud University';
+      if (!c.hero_tagline) c.hero_tagline = 'نحو مستقبل اكتواري مستدام';
       fillText('hero-eyebrow', c.hero_eyebrow);
       fillText('hero-title', c.hero_title);
       fillText('hero-en', c.hero_en);
