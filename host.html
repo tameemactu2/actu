@@ -92,6 +92,7 @@
       <div class="admin-tabs">
         <button class="filter-btn active" data-tab="events-tab">الفعاليات</button>
         <button class="filter-btn" data-tab="articles-tab">المقالات</button>
+        <button class="filter-btn" data-tab="site-tab">محتوى الموقع</button>
       </div>
 
       <!-- ===== تبويب الفعاليات ===== -->
@@ -184,6 +185,83 @@
           </div>
         </div>
       </div>
+      <!-- ===== تبويب محتوى الموقع ===== -->
+      <div id="site-tab" class="hidden">
+        <div class="admin-panel">
+          <h3>الصفحة الرئيسية (الهيرو)</h3>
+          <div class="field">
+            <label for="sc-hero-eyebrow">النص الصغير فوق العنوان</label>
+            <input type="text" id="sc-hero-eyebrow" />
+          </div>
+          <div class="field">
+            <label for="sc-hero-title">عنوان الهيرو</label>
+            <input type="text" id="sc-hero-title" />
+          </div>
+          <div class="field">
+            <label for="sc-hero-en">العنوان الإنجليزي</label>
+            <input type="text" id="sc-hero-en" dir="ltr" class="en" />
+          </div>
+          <div class="field">
+            <label for="sc-hero-tagline">الشعار / الوصف القصير</label>
+            <input type="text" id="sc-hero-tagline" />
+          </div>
+        </div>
+
+        <div class="admin-panel">
+          <h3>صفحة «من نحن»</h3>
+          <div class="field">
+            <label for="sc-about-text">النص التعريفي الرئيسي</label>
+            <textarea id="sc-about-text" rows="4"></textarea>
+          </div>
+          <div class="field">
+            <label for="sc-about-vision">الرؤية</label>
+            <textarea id="sc-about-vision" rows="2"></textarea>
+          </div>
+          <div class="field">
+            <label for="sc-about-mission">الرسالة</label>
+            <textarea id="sc-about-mission" rows="3"></textarea>
+          </div>
+          <div class="field">
+            <label for="sc-about-values">القيم (افصل بينها بفاصلة)</label>
+            <input type="text" id="sc-about-values" placeholder="الاحترافية, الابتكار, الانتماء" />
+          </div>
+        </div>
+
+        <div class="admin-panel">
+          <h3>البطاقات التعريفية</h3>
+          <div id="sc-cards-list"></div>
+          <button id="sc-add-card" class="btn btn-outline-teal btn-sm" style="margin-top:10px;">+ إضافة بطاقة</button>
+        </div>
+
+        <div class="admin-panel">
+          <h3>الأهداف الاستراتيجية</h3>
+          <div id="sc-goals-list"></div>
+          <button id="sc-add-goal" class="btn btn-outline-teal btn-sm" style="margin-top:10px;">+ إضافة هدف</button>
+        </div>
+
+        <div class="admin-panel">
+          <h3>روابط التواصل (الفوتر)</h3>
+          <div class="form-row">
+            <div class="field">
+              <label for="sc-footer-x">رابط حساب X</label>
+              <input type="url" id="sc-footer-x" dir="ltr" placeholder="https://x.com/..." />
+            </div>
+            <div class="field">
+              <label for="sc-footer-linkedin">رابط حساب LinkedIn</label>
+              <input type="url" id="sc-footer-linkedin" dir="ltr" placeholder="https://linkedin.com/..." />
+            </div>
+          </div>
+          <div class="field">
+            <label for="sc-footer-email">البريد الإلكتروني</label>
+            <input type="email" id="sc-footer-email" dir="ltr" placeholder="club@example.com" />
+          </div>
+        </div>
+
+        <div class="form-actions">
+          <button id="sc-save" class="btn btn-green">حفظ جميع التعديلات</button>
+        </div>
+      </div>
+
     </div>
   </div>
 
@@ -202,6 +280,7 @@
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="https://cdn.jsdelivr.net/npm/quill@2.0.3/dist/quill.js"></script>
   <script src="js/config.js"></script>
+  <script src="js/site-content.js"></script>
   <script src="js/gallery.js"></script>
   <script src="js/menu.js"></script>
   <script src="js/admin.js"></script>

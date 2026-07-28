@@ -205,12 +205,16 @@ document.getElementById('ar-image').addEventListener('change', (e) => {
 });
 
 // ================= التبويبات =================
+const allTabs = ['events-tab', 'articles-tab', 'site-tab'];
 document.querySelectorAll('.admin-tabs .filter-btn').forEach((btn) => {
   btn.addEventListener('click', () => {
     document.querySelectorAll('.admin-tabs .filter-btn').forEach((b) => b.classList.remove('active'));
     btn.classList.add('active');
-    document.getElementById('events-tab').classList.toggle('hidden', btn.dataset.tab !== 'events-tab');
-    document.getElementById('articles-tab').classList.toggle('hidden', btn.dataset.tab !== 'articles-tab');
+    allTabs.forEach((t) => {
+      const el = document.getElementById(t);
+      if (el) el.classList.toggle('hidden', t !== btn.dataset.tab);
+    });
+    if (btn.dataset.tab === 'site-tab') loadSiteTab();
   });
 });
 
@@ -538,6 +542,154 @@ document.getElementById('ar-preview').addEventListener('click', () => {
     <div class="detail-sub"><span class="num">📅 ${dateStr}</span></div>
     <div class="detail-content rich-content">${content}</div>`;
   openPreview(html);
+});
+
+// ================= محتوى الموقع =================
+
+// مفتاح → عنصر الإدخال
+const SC_FIELDS = {
+  hero_eyebrow:    'sc-hero-eyebrow',
+  hero_title:      'sc-hero-title',
+  hero_en:         'sc-hero-en',
+  hero_tagline:    'sc-hero-tagline',
+  about_text:      'sc-about-text',
+  about_vision:    'sc-about-vision',
+  about_mission:   'sc-about-mission',
+  footer_x:        'sc-footer-x',
+  footer_linkedin: 'sc-footer-linkedin',
+  footer_email:    'sc-footer-email',
+};
+
+let siteTabLoaded = false;
+
+async function loadSiteTab() {
+  if (siteTabLoaded) return;
+  const keys = Object.keys(SC_FIELDS).concat(['about_values', 'about_cards', 'about_goals']);
+  const c = await loadSiteContent(keys);
+
+  // حقول نصية بسيطة
+  Object.entries(SC_FIELDS).forEach(([key, elId]) => {
+    const el = document.getElementById(elId);
+    if (el && c[key] != null) el.value = c[key];
+  });
+
+  // القيم (مصفوفة → نص بفواصل)
+  if (c.about_values) {
+    try {
+      document.getElementById('sc-about-values').value = JSON.parse(c.about_values).join('، ');
+    } catch (e) {}
+  }
+
+  // البطاقات
+  if (c.about_cards) {
+    try { renderCards(JSON.parse(c.about_cards)); } catch (e) {}
+  }
+
+  // الأهداف
+  if (c.about_goals) {
+    try { renderGoals(JSON.parse(c.about_goals)); } catch (e) {}
+  }
+
+  siteTabLoaded = true;
+}
+
+// ---------- بطاقات ديناميكية ----------
+let scCards = [];
+
+function renderCards(arr) {
+  scCards = arr || [];
+  const list = document.getElementById('sc-cards-list');
+  list.innerHTML = '';
+  scCards.forEach((card, i) => {
+    const row = document.createElement('div');
+    row.className = 'form-row';
+    row.style.alignItems = 'flex-end';
+    row.innerHTML = `
+      <div class="field" style="flex:1">
+        <label>عنوان البطاقة ${i + 1}</label>
+        <input type="text" class="sc-card-title" data-i="${i}" value="${escapeHtml(card.title)}" />
+      </div>
+      <div class="field" style="flex:2">
+        <label>النص</label>
+        <input type="text" class="sc-card-text" data-i="${i}" value="${escapeHtml(card.text)}" />
+      </div>
+      <button class="btn btn-danger btn-sm sc-card-del" data-i="${i}" style="margin-bottom:12px;" type="button">حذف</button>`;
+    list.appendChild(row);
+  });
+  list.querySelectorAll('.sc-card-title').forEach((el) => el.addEventListener('input', () => { scCards[el.dataset.i].title = el.value; }));
+  list.querySelectorAll('.sc-card-text').forEach((el) => el.addEventListener('input', () => { scCards[el.dataset.i].text = el.value; }));
+  list.querySelectorAll('.sc-card-del').forEach((el) => el.addEventListener('click', () => { scCards.splice(el.dataset.i, 1); renderCards(scCards); }));
+}
+
+document.getElementById('sc-add-card').addEventListener('click', () => {
+  scCards.push({ title: '', text: '' });
+  renderCards(scCards);
+});
+
+// ---------- أهداف ديناميكية ----------
+let scGoals = [];
+
+function renderGoals(arr) {
+  scGoals = arr || [];
+  const list = document.getElementById('sc-goals-list');
+  list.innerHTML = '';
+  scGoals.forEach((goal, i) => {
+    const row = document.createElement('div');
+    row.className = 'form-row';
+    row.style.alignItems = 'flex-end';
+    row.innerHTML = `
+      <div class="field" style="flex:1">
+        <label>هدف ${i + 1}</label>
+        <input type="text" class="sc-goal-title" data-i="${i}" value="${escapeHtml(goal.title)}" />
+      </div>
+      <div class="field" style="flex:2">
+        <label>آلية التحقيق</label>
+        <input type="text" class="sc-goal-text" data-i="${i}" value="${escapeHtml(goal.text)}" />
+      </div>
+      <button class="btn btn-danger btn-sm sc-goal-del" data-i="${i}" style="margin-bottom:12px;" type="button">حذف</button>`;
+    list.appendChild(row);
+  });
+  list.querySelectorAll('.sc-goal-title').forEach((el) => el.addEventListener('input', () => { scGoals[el.dataset.i].title = el.value; }));
+  list.querySelectorAll('.sc-goal-text').forEach((el) => el.addEventListener('input', () => { scGoals[el.dataset.i].text = el.value; }));
+  list.querySelectorAll('.sc-goal-del').forEach((el) => el.addEventListener('click', () => { scGoals.splice(el.dataset.i, 1); renderGoals(scGoals); }));
+}
+
+document.getElementById('sc-add-goal').addEventListener('click', () => {
+  scGoals.push({ title: '', text: '' });
+  renderGoals(scGoals);
+});
+
+// ---------- حفظ جميع محتوى الموقع ----------
+document.getElementById('sc-save').addEventListener('click', async () => {
+  const btn = document.getElementById('sc-save');
+  btn.disabled = true;
+  btn.textContent = 'جارٍ الحفظ…';
+
+  try {
+    // تجميع القيم
+    const valuesInput = document.getElementById('sc-about-values').value;
+    const valuesArr = valuesInput.split(/[،,]/).map((v) => v.trim()).filter(Boolean);
+
+    const rows = [];
+    Object.entries(SC_FIELDS).forEach(([key, elId]) => {
+      rows.push({ key, value: document.getElementById(elId).value.trim() });
+    });
+    rows.push({ key: 'about_values', value: JSON.stringify(valuesArr) });
+    rows.push({ key: 'about_cards', value: JSON.stringify(scCards) });
+    rows.push({ key: 'about_goals', value: JSON.stringify(scGoals) });
+
+    // upsert كل الصفوف دفعة واحدة
+    const { error } = await sb.from('site_content').upsert(rows, { onConflict: 'key' });
+    if (error) throw error;
+
+    showAlert(adminAlert, 'تم حفظ محتوى الموقع بنجاح.', true);
+  } catch (err) {
+    console.error(err);
+    showAlert(adminAlert, 'تعذّر الحفظ. تأكد من إنشاء جدول site_content وصلاحياته.');
+  } finally {
+    btn.disabled = false;
+    btn.textContent = 'حفظ جميع التعديلات';
+  }
 });
 
 // بدء التشغيل
