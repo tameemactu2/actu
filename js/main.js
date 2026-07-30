@@ -13,7 +13,7 @@ async function loadEvents() {
     .order('event_date', { ascending: false });
 
   if (error) {
-    eventsGrid.innerHTML = `<div class="empty-state">تعذّر تحميل الفعاليات حالياً. حاول تحديث الصفحة.</div>`;
+    eventsGrid.innerHTML = `<div class="empty-state">تعذّر تحميل الأنشطة حالياً. حاول تحديث الصفحة.</div>`;
     console.error(error);
     return;
   }
@@ -59,10 +59,10 @@ function renderEvents() {
   if (!list.length) {
     const msg =
       currentFilter === 'upcoming'
-        ? 'ما فيه فعاليات قادمة حالياً — تابعنا، الجديد قريب.'
+        ? 'ما فيه أنشطة قادمة حالياً — تابعنا، الجديد قريب.'
         : currentFilter === 'past'
-          ? 'ما فيه فعاليات منتهية بعد.'
-          : 'ما أضيفت فعاليات بعد.';
+          ? 'ما فيه أنشطة منتهية بعد.'
+          : 'ما أضيفت أنشطة بعد.';
     eventsGrid.innerHTML = `<div class="empty-state">${msg}</div>`;
     const mb = document.getElementById('events-more');
     if (mb) mb.innerHTML = '';
