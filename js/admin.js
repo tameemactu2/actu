@@ -698,22 +698,41 @@ document.getElementById('sc-save').addEventListener('click', async () => {
     rows.push({ key: 'about_cards', value: JSON.stringify(scCards) });
     rows.push({ key: 'about_goals', value: JSON.stringify(scGoals) });
 
-    // حفظ كل مفتاح على حدة (update لو موجود، insert لو ما موجود)
+    // حفظ كل مفتاح: update أولاً، ولو ما تعدّل أي صف نسوي insert
+    let savedCount = 0;
     for (const row of rows) {
-      const { data: existing } = await sb.from('site_content').select('key').eq('key', row.key).single();
-      let error;
-      if (existing) {
-        ({ error } = await sb.from('site_content').update({ value: row.value }).eq('key', row.key));
-      } else {
-        ({ error } = await sb.from('site_content').insert(row));
+      // select() بعد update ترجّع الصفوف اللي فعلاً تعدّلت
+      const { data: updated, error: upErr } = await sb
+        .from('site_content')
+        .update({ value: row.value })
+        .eq('key', row.key)
+        .select('key');
+
+      if (upErr) throw upErr;
+
+      if (updated && updated.length) {
+        savedCount++;
+        continue;
       }
-      if (error) throw error;
+
+      // ما فيه صف بهذا المفتاح — ننشئه
+      const { data: inserted, error: insErr } = await sb
+        .from('site_content')
+        .insert(row)
+        .select('key');
+
+      if (insErr) throw insErr;
+      if (inserted && inserted.length) savedCount++;
     }
 
-    showAlert(adminAlert, 'تم حفظ محتوى الموقع بنجاح.', true);
+    if (savedCount === 0) {
+      throw new Error('لم يتم حفظ أي حقل — تحقق من صلاحيات الكتابة (is_host).');
+    }
+
+    showAlert(adminAlert, `تم حفظ محتوى الموقع بنجاح (${savedCount} حقل).`, true);
   } catch (err) {
     console.error(err);
-    showAlert(adminAlert, 'تعذّر الحفظ. تأكد من إنشاء جدول site_content وصلاحياته.');
+    showAlert(adminAlert, 'تعذّر الحفظ: ' + (err.message || err.hint || 'خطأ غير معروف'));
   } finally {
     btn.disabled = false;
     btn.textContent = 'حفظ جميع التعديلات';
