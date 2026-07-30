@@ -90,20 +90,20 @@
       <div id="admin-alert" class="alert"></div>
 
       <div class="admin-tabs">
-        <button class="filter-btn active" data-tab="events-tab">الفعاليات</button>
+        <button class="filter-btn active" data-tab="events-tab">الأنشطة</button>
         <button class="filter-btn" data-tab="articles-tab">المقالات</button>
         <button class="filter-btn" data-tab="site-tab">محتوى الموقع</button>
       </div>
 
-      <!-- ===== تبويب الفعاليات ===== -->
+      <!-- ===== تبويب الأنشطة ===== -->
       <div id="events-tab">
         <div class="admin-panel">
-          <h3 id="event-form-title">إضافة فعالية جديدة</h3>
+          <h3 id="event-form-title">إضافة نشاط جديد</h3>
           <input type="hidden" id="event-id" />
           <div class="form-row">
             <div class="field">
-              <label for="ev-title">عنوان الفعالية</label>
-              <input type="text" id="ev-title" placeholder="مثال: ورشة تحضير Exam FM" />
+              <label for="ev-title">عنوان النشاط</label>
+              <input type="text" id="ev-title" placeholder="مثال: ورشة تعريفية بالعلوم الاكتوارية" />
             </div>
             <div class="field">
               <label for="ev-date">التاريخ</label>
@@ -124,11 +124,11 @@
             </div>
           </div>
           <div class="field">
-            <label>وصف الفعالية (تقدر تنسّق وتدرج صور داخل النص)</label>
+            <label>وصف النشاط (تقدر تنسّق وتدرج صور داخل النص)</label>
             <div id="ev-editor" class="rich-editor"></div>
           </div>
           <div class="field">
-            <label>صور الفعالية (اختياري — تقدر تختار أكثر من صورة)</label>
+            <label>صور النشاط (اختياري — تقدر تختار أكثر من صورة)</label>
             <label class="upload-box" for="ev-image">
               اضغط لاختيار صورة أو أكثر من جهازك (JPG / PNG / WebP)
               <input type="file" id="ev-image" accept="image/*" multiple class="hidden" />
@@ -136,14 +136,14 @@
             <div class="upload-preview" id="ev-image-preview"></div>
           </div>
           <div class="form-actions">
-            <button id="ev-save" class="btn btn-green">حفظ الفعالية</button>
+            <button id="ev-save" class="btn btn-green">حفظ النشاط</button>
             <button id="ev-preview" class="btn btn-outline-teal">معاينة</button>
             <button id="ev-cancel" class="btn btn-ghost hidden">إلغاء التعديل</button>
           </div>
         </div>
 
         <div class="admin-panel">
-          <h3>الفعاليات الحالية</h3>
+          <h3>الأنشطة الحالية</h3>
           <div id="admin-events-list" class="admin-list">
             <div class="loader">جارٍ التحميل…</div>
           </div>

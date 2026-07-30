@@ -218,7 +218,7 @@ document.querySelectorAll('.admin-tabs .filter-btn').forEach((btn) => {
   });
 });
 
-// ================= الفعاليات =================
+// ================= الأنشطة =================
 
 async function loadAdminEvents() {
   const list = document.getElementById('admin-events-list');
@@ -229,7 +229,7 @@ async function loadAdminEvents() {
     return;
   }
   if (!data.length) {
-    list.innerHTML = '<div class="empty-state">ما فيه فعاليات بعد — أضف أول فعالية من النموذج فوق.</div>';
+    list.innerHTML = '<div class="empty-state">ما فيه أنشطة بعد — أضف أول نشاط من النموذج فوق.</div>';
     return;
   }
   list.innerHTML = '';
@@ -274,7 +274,7 @@ function startEditEvent(ev) {
   editingEventImages = ev.images && ev.images.length ? ev.images.slice() : (ev.image_url ? [ev.image_url] : []);
   pendingEventFiles = [];
   refreshEventPreview();
-  document.getElementById('event-form-title').textContent = 'تعديل الفعالية';
+  document.getElementById('event-form-title').textContent = 'تعديل النشاط';
   document.getElementById('ev-cancel').classList.remove('hidden');
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
@@ -287,7 +287,7 @@ function resetEventForm() {
   document.getElementById('ev-image-preview').innerHTML = '';
   editingEventImages = [];
   pendingEventFiles = [];
-  document.getElementById('event-form-title').textContent = 'إضافة فعالية جديدة';
+  document.getElementById('event-form-title').textContent = 'إضافة نشاط جديد';
   document.getElementById('ev-cancel').classList.add('hidden');
 }
 
@@ -328,7 +328,7 @@ document.getElementById('ev-save').addEventListener('click', async () => {
     }
     if (error) throw error;
 
-    showAlert(adminAlert, id ? 'تم تحديث الفعالية.' : 'تمت إضافة الفعالية.', true);
+    showAlert(adminAlert, id ? 'تم تحديث النشاط.' : 'تمت إضافة النشاط.', true);
     resetEventForm();
     loadAdminEvents();
   } catch (err) {
@@ -336,19 +336,19 @@ document.getElementById('ev-save').addEventListener('click', async () => {
     showAlert(adminAlert, 'صار خطأ أثناء الحفظ. تأكد من إنشاء حاوية الصور وصلاحيات الجدول ثم أعد المحاولة.');
   } finally {
     btn.disabled = false;
-    btn.textContent = 'حفظ الفعالية';
+    btn.textContent = 'حفظ النشاط';
   }
 });
 
 async function deleteEvent(ev) {
-  if (!confirm(`متأكد من حذف الفعالية «${ev.title}»؟ الحذف نهائي.`)) return;
+  if (!confirm(`متأكد من حذف النشاط «${ev.title}»؟ الحذف نهائي.`)) return;
   const { error } = await sb.from('events').delete().eq('id', ev.id);
   if (error) {
     console.error(error);
     showAlert(adminAlert, 'تعذّر الحذف. أعد المحاولة.');
     return;
   }
-  showAlert(adminAlert, 'تم حذف الفعالية.', true);
+  showAlert(adminAlert, 'تم حذف النشاط.', true);
   loadAdminEvents();
 }
 
@@ -503,7 +503,7 @@ function closePreview() {
 document.getElementById('preview-close').addEventListener('click', closePreview);
 document.getElementById('preview-close-bg').addEventListener('click', closePreview);
 
-// معاينة الفعالية
+// معاينة النشاط
 document.getElementById('ev-preview').addEventListener('click', () => {
   const title = document.getElementById('ev-title').value.trim() || '(بدون عنوان)';
   const event_date = document.getElementById('ev-date').value;
