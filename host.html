@@ -240,6 +240,28 @@
         </div>
 
         <div class="admin-panel">
+          <h3>زر التسجيل</h3>
+          <div class="form-row">
+            <div class="field">
+              <label for="sc-register-label">نص الزر</label>
+              <input type="text" id="sc-register-label" placeholder="سجّل معنا" />
+            </div>
+            <div class="field">
+              <label for="sc-register-enabled">حالة الزر</label>
+              <select id="sc-register-enabled">
+                <option value="1">ظاهر في الموقع</option>
+                <option value="0">مخفي</option>
+              </select>
+            </div>
+          </div>
+          <div class="field">
+            <label for="sc-register-url">رابط التسجيل</label>
+            <input type="url" id="sc-register-url" dir="ltr" placeholder="https://forms.gle/..." />
+            <small style="color:#5E7377;">لازم يبدأ بـ https:// — لو تركته فاضي الزر ما يظهر.</small>
+          </div>
+        </div>
+
+        <div class="admin-panel">
           <h3>روابط التواصل (الفوتر)</h3>
           <div class="form-row">
             <div class="field">
