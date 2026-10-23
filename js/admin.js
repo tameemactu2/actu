@@ -236,14 +236,12 @@ async function loadAdminEvents() {
   data.forEach((ev) => {
     const item = document.createElement('div');
     item.className = 'admin-item';
-    const st = effectiveStatus(ev);
     item.innerHTML = `
       ${ev.image_url ? `<img class="thumb" src="${escapeHtml(ev.image_url)}" alt="" />` : '<div class="thumb"></div>'}
       <div class="meta">
         <strong>${escapeHtml(ev.title)}</strong>
         <span class="num">${formatDateAr(ev.event_date)}</span> ·
-        <span>${escapeHtml(ev.location || '')}</span> ·
-        <span class="tag ${st === 'upcoming' ? 'tag-upcoming' : 'tag-past'}">${st === 'upcoming' ? 'قادمة' : 'منتهية'}</span>
+        <span>${escapeHtml(ev.location || '')}</span>
       </div>
       <div class="actions"></div>`;
     const actions = item.querySelector('.actions');
@@ -268,7 +266,6 @@ function startEditEvent(ev) {
   document.getElementById('ev-title').value = ev.title || '';
   document.getElementById('ev-date').value = ev.event_date || '';
   document.getElementById('ev-location').value = ev.location || '';
-  document.getElementById('ev-status').value = ev.status === 'past' ? 'past' : 'upcoming';
   if (evEditor) evEditor.root.innerHTML = ev.description || '';
   document.getElementById('ev-image').value = '';
   editingEventImages = ev.images && ev.images.length ? ev.images.slice() : (ev.image_url ? [ev.image_url] : []);
@@ -281,7 +278,6 @@ function startEditEvent(ev) {
 
 function resetEventForm() {
   ['event-id', 'ev-title', 'ev-date', 'ev-location'].forEach((id) => (document.getElementById(id).value = ''));
-  document.getElementById('ev-status').value = 'upcoming';
   if (evEditor) evEditor.root.innerHTML = '';
   document.getElementById('ev-image').value = '';
   document.getElementById('ev-image-preview').innerHTML = '';
@@ -298,7 +294,6 @@ document.getElementById('ev-save').addEventListener('click', async () => {
   const title = document.getElementById('ev-title').value.trim();
   const event_date = document.getElementById('ev-date').value;
   const location = document.getElementById('ev-location').value.trim();
-  const status = document.getElementById('ev-status').value;
   const description = (evEditor && evEditor.getText().trim()) ? evEditor.root.innerHTML : '';
 
   if (!title || !event_date) {
@@ -319,7 +314,7 @@ document.getElementById('ev-save').addEventListener('click', async () => {
     }
     const image_url = images[0] || null; // أول صورة = صورة الغلاف
 
-    const payload = { title, event_date, location, status, description, image_url, images };
+    const payload = { title, event_date, location, description, image_url, images };
     let error;
     if (id) {
       ({ error } = await sb.from('events').update(payload).eq('id', id));
@@ -508,18 +503,11 @@ document.getElementById('ev-preview').addEventListener('click', () => {
   const title = document.getElementById('ev-title').value.trim() || '(بدون عنوان)';
   const event_date = document.getElementById('ev-date').value;
   const location = document.getElementById('ev-location').value.trim();
-  const status = document.getElementById('ev-status').value;
   const description = (evEditor && evEditor.getText().trim()) ? evEditor.root.innerHTML : '';
   const images = previewImages(editingEventImages, pendingEventFiles);
 
-  const st = status === 'past' ? 'past' : 'upcoming';
-  const tag = st === 'upcoming'
-    ? '<span class="tag tag-upcoming">قادمة</span>'
-    : '<span class="tag tag-past">منتهية</span>';
-
   const html = `
     ${galleryHtml(images)}
-    <div class="detail-meta">${tag}</div>
     <h1>${escapeHtml(title)}</h1>
     <div class="detail-sub">
       ${event_date ? `<span class="num">📅 ${formatDateAr(event_date)}</span>` : ''}

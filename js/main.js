@@ -1,7 +1,6 @@
 // الصفحة العامة: قراءة الفعاليات والمقالات من Supabase (قراءة فقط للزوار)
 
 let allEvents = [];
-let currentFilter = 'all';
 
 const eventsGrid = document.getElementById('events-grid');
 const articlesGrid = document.getElementById('articles-grid');
@@ -25,11 +24,6 @@ let eventsExpanded = false;
 const EVENTS_LIMIT = 3;
 
 function eventCardHtml(ev) {
-  const st = effectiveStatus(ev);
-  const tag =
-    st === 'upcoming'
-      ? '<span class="tag tag-upcoming">قادمة</span>'
-      : '<span class="tag tag-past">منتهية</span>';
   const img = ev.image_url
     ? `<img src="${escapeHtml(ev.image_url)}" alt="${escapeHtml(ev.title)}" loading="lazy" />`
     : `<div class="img-fallback"><img src="assets/mark.png" alt="" /></div>`;
@@ -39,7 +33,6 @@ function eventCardHtml(ev) {
         <div class="event-img">${img}</div>
         <div class="event-body">
           <div class="event-top">
-            ${tag}
             <span class="event-date num">📅 ${formatDateAr(ev.event_date)}</span>
           </div>
           <h3>${escapeHtml(ev.title)}</h3>
@@ -51,19 +44,10 @@ function eventCardHtml(ev) {
 }
 
 function renderEvents() {
-  const list = allEvents.filter((ev) => {
-    if (currentFilter === 'all') return true;
-    return effectiveStatus(ev) === currentFilter;
-  });
+  const list = allEvents;
 
   if (!list.length) {
-    const msg =
-      currentFilter === 'upcoming'
-        ? 'ما فيه أنشطة قادمة حالياً — تابعنا، الجديد قريب.'
-        : currentFilter === 'past'
-          ? 'ما فيه أنشطة منتهية بعد.'
-          : 'ما أضيفت أنشطة بعد.';
-    eventsGrid.innerHTML = `<div class="empty-state">${msg}</div>`;
+    eventsGrid.innerHTML = `<div class="empty-state">ما أضيفت أنشطة بعد.</div>`;
     const mb = document.getElementById('events-more');
     if (mb) mb.innerHTML = '';
     return;
@@ -86,16 +70,6 @@ function renderEvents() {
     }
   }
 }
-
-document.querySelectorAll('.filter-btn').forEach((btn) => {
-  btn.addEventListener('click', () => {
-    document.querySelectorAll('.filter-btn').forEach((b) => b.classList.remove('active'));
-    btn.classList.add('active');
-    currentFilter = btn.dataset.filter;
-    eventsExpanded = false;
-    renderEvents();
-  });
-});
 
 let allArticles = [];
 let articlesExpanded = false;
